@@ -61,6 +61,7 @@ set(OPENPREF_HEADERS
     src/src/util/baser.h
     src/src/util/debug.h
     src/src/util/ncounter.h
+    src/src/util/screenutil.h
 
     src/src/cardutil/card.h
     src/src/cardutil/cardlist.h

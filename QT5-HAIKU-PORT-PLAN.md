@@ -1,8 +1,8 @@
 # OpenPref — Qt 4 → Qt 5 conversion plan (Haiku)
 
-Status: **T1 and T2 done.** T1 = `src/openpref.qrc` (111 PNGs) + root
-`CMakeLists.txt`; T2 = the two Qt5 hard errors (`qFindChildren`,
-`toAscii()`) plus the dead `<QTextCodec>` include. T3–T8 pending.
+Status: **T1–T8 done.** The tree is now a Qt 5.15 / CMake build, with no
+deprecated Qt4 API left in it. Nothing has been compiled yet: the build is
+verified manually on Haiku (see §10).
 Branch: `converttoqt5` (per `AGENTS.md`). Base: `originalqt4`.
 Target: Qt 5.15.x on Haiku x86_64 (`qt5`, `qt5_devel`, `qt5_tools`).
 
@@ -41,7 +41,7 @@ GPLv3. File headers must be preserved.
 |---|---------|--------|
 | F1 | **There is no build file at all.** No `.pro`, no `CMakeLists.txt` anywhere. Only 7 orphan qmake `.pri` fragments and 6 orphan `*.cmake` fragments, none referenced by a root file. | The tree cannot be built today, on any OS. Build system work is mandatory, not cosmetic. |
 | F2 | **There is no `.qrc`** (never existed in this repo's history). Yet `deskview.cpp`, `qbidbutton.cpp`, `formbid.cpp` and `kpref.cpp` load every image from `:/pics/…`. | Compiles fine, then runs with an **empty deck, no card faces, no menu icons**. The resource file has to be authored from `pics/` (111 PNGs). |
-| F3 | 9 of 40 source files are **CP1251**, the rest ASCII/UTF-8. All non-ASCII bytes are inside comments (Russian notes) — no Cyrillic string literals. | Not fatal, but Qt5 always assumes UTF-8 for literals and `moc` chokes on some legacy encodings. Low-risk cleanup. |
+| F3 | 11 of 42 source files are **KOI8-R** (the plan first guessed CP1251; the bytes decode cleanly as KOI8-R and as gibberish in CP1251), the rest ASCII/UTF-8. All non-ASCII bytes are inside comments (Russian notes) — no Cyrillic string literals. | Not fatal, but Qt5 always assumes UTF-8 for literals and `moc` chokes on some legacy encodings. Low-risk cleanup. |
 | F4 | `AUTHORS` already lists "Michel Clasquin-Johnson, port to qt5" — a previous attempt stopped after the orphan `.cmake` fragments and the Qt4-only `FindLinguist.cmake`. | We restart the build system rather than patch the fragments. |
 | F5 | Only Qt5 **Widgets** is needed: no QtScript, QtNetwork, QtXml, QtOpenGL, QtSql, QtPrintSupport, QtMultimedia usage anywhere. | One `find_package` and one link library. No extra packages to install. |
 | F6 | Old message boxes use the Qt4 int-button API (`QMessageBox::Yes | QMessageBox::Default`). | Still present and **not** marked deprecated in 5.15 — compiles as is. Modernisation optional. |
@@ -241,7 +241,7 @@ target_link_libraries(openpref PRIVATE Qt5::Widgets)
 deliberate). `main.h` contains only a commented-out `Q_OBJECT` class — moc emits
 "No relevant classes" but that is harmless; it can be dropped from the list.
 
-**Delete the legacy build files** once the root `CMakeLists.txt` builds:
+**Delete the legacy build files** (done on `converttoqt5`):
 `src/src/main.pri`, `src/src/*/*.pri` (6), `src/src/src.cmake`,
 `src/src/*/*.cmake` (6), `src/cmake/FindLinguist.cmake` (contains
 `QT4_WRAP_TS` + `lrelease-qt4`), `src/cmake/cmake_uninstall.cmake.in`.
@@ -293,7 +293,7 @@ Optional and cheap: add a `.gitignore` with `build/` and `*.o`.
 4. **T4 — P1 deprecations**: `qsrand`/`qrand` → `QRandomGenerator`;
    remaining `QString::sprintf` (qbidbutton.cpp); `QDesktopWidget` →
    `QScreen` helper in the 5 sites.
-5. **T5 — encoding**: convert the 9 CP1251 files to UTF-8 (comments only; verify
+5. **T5 — encoding**: convert the 11 KOI8-R files to UTF-8 (comments only; verify
    with `file` + a diff that is whitespace/encoding-only).
 6. **T6 — cleanup**: delete `.pri` fragments, `*.cmake` fragments and
    `cmake/FindLinguist.cmake`; optional `.gitignore`.
