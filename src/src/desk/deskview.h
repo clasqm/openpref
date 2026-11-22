@@ -29,8 +29,10 @@
 #include <QEventLoop>
 #include <QHash>
 #include <QImage>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
 #include <QString>

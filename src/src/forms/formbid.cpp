@@ -21,12 +21,12 @@
  */
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QMessageBox>
 #include <QObject>
 #include <QToolTip>
 
 #include "formbid.h"
+#include "screenutil.h"
 
 #include "prfconst.h"
 
@@ -54,8 +54,7 @@ void FormBid::showEvent (QShowEvent *event) {
     x = dims.left()+(dims.width()-width())/2;
     y = dims.top()+(dims.height()-height())/2;
   } else {
-    QDesktopWidget *desk = QApplication::desktop();
-    QRect dims(desk->availableGeometry(this));
+    const QRect dims(availableGeometryFor(this));
     x = dims.left()+(dims.width()-width())/2;
     y = dims.top()+(dims.height()-height())/2;
   }
@@ -63,10 +62,9 @@ void FormBid::showEvent (QShowEvent *event) {
 }
 
 void FormBid::closeEvent(QCloseEvent *event) {
-	int ret = QMessageBox::question(this, tr("OpenPref"),
+	const QMessageBox::StandardButton ret = QMessageBox::question(this, tr("OpenPref"),
         tr("Do you really want to quit the game?"),
-        QMessageBox::Yes | QMessageBox::Default,
-        QMessageBox::No | QMessageBox::Escape);
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 	if (ret == QMessageBox::Yes)
          exit(0);
     else

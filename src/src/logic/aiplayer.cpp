@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QPainter>
+#include <QRandomGenerator>
 
 #include "aiplayer.h"
 
@@ -534,7 +535,7 @@ Card *AiPlayer::MiserCatch1 (Player *aLeftPlayer, Player *aRightPlayer) {
   for (int i=0; i<4; i++) {
 	s=0;
 	while (s==0) {
-		s = qrand()%4+1;
+		s = QRandomGenerator::global()->bounded(4)+1;
 		for (int j=0; j<i; j++)
 			if (s==suit[j]) s=0;
 	}
@@ -1134,7 +1135,7 @@ Card *AiPlayer::MyPass1 (Card *rMove, Player *aLeftPlayer, Player *aRightPlayer)
   	for (int i=0; i<4; i++) {
 		s=0;
 		while (s==0) {
-			s = qrand()%4+1;
+			s = QRandomGenerator::global()->bounded(4)+1;
 			for (int j=0; j<i; j++)
 				if (s==suit[j]) s=0;
 		}
@@ -1653,7 +1654,7 @@ void AiPlayer::makestatfill (int nCards, int maxmin) {
 
 bool AiPlayer::chooseClosedWhist () {
 	//tSuitProbs countGameTricks((eSuit)f, 1)
-	if (qrand()%4 == 0)
+	if (QRandomGenerator::global()->bounded(4) == 0)
 		return true;
 	else
 		return false;

@@ -20,8 +20,10 @@
  *      http://www.gnu.org/licenses 
  */
 
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include <QDebug>
 
 #include <QApplication>
@@ -36,6 +38,7 @@
 #include <QDialog>
 #include <QObject>
 #include <QHash>
+#include <QTextOption>
 
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -86,7 +89,7 @@ bool DeskView::loadCards () {
       // build highlighted image
       QImage *im = new QImage(fname);
       yellowize(im);
-      resname.sprintf("q%i%i", face, suit);
+      resname = QStringLiteral("q%1%2").arg(face).arg(suit);
       cardI[resname] = im;
     }
   }
@@ -97,7 +100,7 @@ bool DeskView::loadCards () {
   for (int f = 6; f <= 10; f++) {
     for (int s = 1; s <= 5; s++) {
       QString fname;
-      fname.sprintf(":/pics/bids/s%i%i.png", f, s);
+      fname = QStringLiteral(":/pics/bids/s%1%2.png").arg(f).arg(s);
       bidIcons[f*10+s] = new QImage(fname);
     }
   }
@@ -114,8 +117,9 @@ void DeskView::freeCards () {
 
 
 QImage *DeskView::GetImgByName (const char *name) {
-  if (!cardI.contains(name)) cardI["empty"];
-  return cardI[name];
+  QImage *img = cardI.value(QString::fromLatin1(name), 0);
+  if (!img) img = cardI.value(QStringLiteral("empty"), 0);
+  return img;
 }
 
 
@@ -480,7 +484,7 @@ void DeskView::drawText (const QString &str, int x, int y, QRgb textColor, QRgb 
 
 
 void DeskView::MessageBox (const QString &text, const QString &caption) {
-  QMessageBox mb(caption, text, QMessageBox::Information, QMessageBox::Ok | QMessageBox::Default, 0, 0);
+  QMessageBox mb(QMessageBox::Information, caption, text, QMessageBox::Ok);
   mb.exec();
 }
 

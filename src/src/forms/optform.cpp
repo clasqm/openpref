@@ -20,10 +20,10 @@
  *      http://www.gnu.org/licenses 
  */
 
-#include <QDesktopWidget>
 #include <QDialog>
 
 #include "optform.h"
+#include "screenutil.h"
 
 OptDialog::OptDialog (QWidget *parent) : QDialog(parent) {
   setupUi(this);
@@ -41,8 +41,7 @@ void OptDialog::showEvent (QShowEvent *event) {
     x = dims.left()+(dims.width()-width())/2;
     y = dims.top()+(dims.height()-height())/2;
   } else {
-    QDesktopWidget *desk = QApplication::desktop();
-    QRect dims(desk->availableGeometry(this));
+    const QRect dims(availableGeometryFor(this));
     x = dims.left()+(dims.width()-width())/2;
     y = dims.top()+(dims.height()-height())/2;
   }

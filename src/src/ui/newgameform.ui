@@ -37,10 +37,6 @@
   <property name="windowTitle">
    <string>New Game</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>../../../../pics/newgame.png</normaloff>../../../../pics/newgame.png</iconset>
-  </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>

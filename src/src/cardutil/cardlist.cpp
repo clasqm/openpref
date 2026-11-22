@@ -20,6 +20,8 @@
  *      http://www.gnu.org/licenses 
  */
 
+#include <QRandomGenerator>
+
 #include "cardlist.h"
 
 #include "baser.h"
@@ -155,7 +157,7 @@ Card *CardList::lesserInSuit (int aFace, int aSuit) const {
 }
 
 
-//первая меньше чем переданная
+//п©п╣я─п╡п╟я▐ п╪п╣п╫я▄я┬п╣ я┤п╣п╪ п©п╣я─п╣п╢п╟п╫п╫п╟я▐
 Card *CardList::lesserInSuit (Card *card) const {
   if (!card) return 0;
   return lesserInSuit(card->face(), card->suit());
@@ -278,7 +280,7 @@ void CardList::shuffle () {
   }
   // Fisher-Yates shuffler
   for (int f = mList.size()-1; f >= 0; f--) {
-    int n = (qrand()/256)%(f+1); // 0<=n<=f
+    int n = QRandomGenerator::global()->bounded(f+1); // 0<=n<=f
     mList.swap(f, n);
   }
 }

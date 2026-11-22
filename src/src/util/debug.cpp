@@ -20,10 +20,12 @@
  *      http://www.gnu.org/licenses 
  */
 
+#include <cstdio>
+#include <cstdlib>
+
 #include <QFile>
 
 #include "debug.h"
-#include <cstdlib>
 using namespace std;
 
 

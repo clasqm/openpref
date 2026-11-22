@@ -20,15 +20,14 @@
  *      http://www.gnu.org/licenses 
  */
 
+#include <QAction>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QMainWindow>
 #include <QSettings>
 
-#include <QTextBrowser>
-
 #include "kpref.h"
+#include "screenutil.h"
 #include <QDebug>
 
 #include "desktop.h"
@@ -54,6 +53,7 @@ Kpref *kpref;
 
 Kpref::Kpref () {
   setWindowTitle("OpenPref");
+  setWindowIcon(QIcon(QStringLiteral(":/pics/openpref.png")));
   
   initMenuBar();
   mInPaintEvent = mInMouseMoveEvent = mWaitingMouseUp = false;
@@ -68,8 +68,7 @@ Kpref::Kpref () {
   setStatusBar(HintBar);
   HintBar->setFixedHeight(HINTBAR_MAX_HEIGHT);
   
-  QDesktopWidget *desk = QApplication::desktop();
-  QRect dims(desk->availableGeometry(this));
+  const QRect dims(availableGeometryFor(this));
   int w = dims.width()-60;
   //w = 528*2;
   int h = dims.height()-120;
@@ -127,28 +126,55 @@ void Kpref::adjustDesk () {
 
 void Kpref::initMenuBar () {
   fileMenu = menuBar()->addMenu(tr("&Game"));
-  actNewGame = fileMenu->addAction(QIcon(QString(":/pics/newgame.png")), tr("&New game..."), this, SLOT(slotNewSingleGame()), Qt::CTRL+Qt::Key_N);
+
+  actNewGame = fileMenu->addAction(QIcon(QStringLiteral(":/pics/newgame.png")), tr("&New game..."));
+  actNewGame->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
+  connect(actNewGame, &QAction::triggered, this, &Kpref::slotNewSingleGame);
+
   fileMenu->addSeparator();
-  actFileOpen = fileMenu->addAction(QIcon(QString(":/pics/fileopen.png")), tr("&Open..."), this, SLOT(slotFileOpen()), Qt::CTRL+Qt::Key_O);
-  actFileSave = fileMenu->addAction(QIcon(QString(":/pics/filesave.png")), tr("&Save"), this, SLOT(slotFileSave()), Qt::CTRL+Qt::Key_S);
+
+  actFileOpen = fileMenu->addAction(QIcon(QStringLiteral(":/pics/fileopen.png")), tr("&Open..."));
+  actFileOpen->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_O));
+  connect(actFileOpen, &QAction::triggered, this, &Kpref::slotFileOpen);
+
+  actFileSave = fileMenu->addAction(QIcon(QStringLiteral(":/pics/filesave.png")), tr("&Save"));
+  actFileSave->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
+  connect(actFileSave, &QAction::triggered, this, &Kpref::slotFileSave);
+
   fileMenu->addSeparator();
-  actOptions = fileMenu->addAction(QIcon(QString(":/pics/tool.png")), tr("&Options..."), this, SLOT(slotOptions()), Qt::CTRL+Qt::Key_P);
+
+  actOptions = fileMenu->addAction(QIcon(QStringLiteral(":/pics/tool.png")), tr("&Options..."));
+  actOptions->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_P));
+  connect(actOptions, &QAction::triggered, this, &Kpref::slotOptions);
+
   fileMenu->addSeparator();
-  //actQuit = fileMenu->addAction(QIcon(QString(":/pics/exit.png")), tr("&Quit"), qApp, SLOT(quit()), Qt::CTRL+Qt::Key_Q);
-  actQuit = fileMenu->addAction(QIcon(QString(":/pics/exit.png")), tr("&Quit"), this, SLOT(slotQuit()), Qt::CTRL+Qt::Key_Q);
+
+  actQuit = fileMenu->addAction(QIcon(QStringLiteral(":/pics/exit.png")), tr("&Quit"));
+  actQuit->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+  connect(actQuit, &QAction::triggered, this, &Kpref::slotQuit);
+
   actFileSave->setEnabled(false);
   actOptions->setEnabled(true);
 
   viewMenu = menuBar()->addMenu(tr("&Show"));
-  viewMenu->addAction(QIcon(QString(":/pics/paper.png")), tr("S&core..."), this, SLOT(slotShowScore()), Qt::CTRL+Qt::Key_R);
+  QAction *actShowScore = viewMenu->addAction(QIcon(QStringLiteral(":/pics/paper.png")), tr("S&core..."));
+  actShowScore->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
+  connect(actShowScore, &QAction::triggered, this, &Kpref::slotShowScore);
 
   menuBar()->addSeparator();
   helpMenu = menuBar()->addMenu(tr("&Help"));
-  helpMenu->addAction(tr("&Preferans Rules..."), this, SLOT(slotRules()), Qt::Key_F1);
-  helpMenu->addAction(tr("&About OpenPref"), this, SLOT(slotHelpAbout()), 0);
-  helpMenu->addAction(tr("About &Qt"), qApp, SLOT(aboutQt()));
-  //actAboutQt = helpMenu->addAction(tr("About &Qt"));
-  //connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+  QAction *actRules = helpMenu->addAction(tr("&Preferans Rules..."));
+  actRules->setShortcut(QKeySequence(Qt::Key_F1));
+  connect(actRules, &QAction::triggered, this, &Kpref::slotRules);
+
+  QAction *actAbout = helpMenu->addAction(tr("&About OpenPref"));
+  connect(actAbout, &QAction::triggered, this, &Kpref::slotHelpAbout);
+
+  actAboutQt = helpMenu->addAction(tr("About &Qt"));
+  // QApplication has both a static aboutQt(QWidget*, QString) and an
+  // aboutQt() slot, so the pointer-to-member form is ambiguous here.
+  connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
 
@@ -314,13 +340,11 @@ void Kpref::paintEvent (QPaintEvent *event) {
 }
 
 void Kpref::closeEvent(QCloseEvent *event) {
-	 int ret;
 	if (!mDesktop->mGameRunning)
 		exit(0);	 
-	 ret = QMessageBox::question(this, tr("OpenPref"),
+	const QMessageBox::StandardButton ret = QMessageBox::question(this, tr("OpenPref"),
         tr("Do you really want to quit the game?"),
-        QMessageBox::Yes | QMessageBox::Default,
-        QMessageBox::No | QMessageBox::Escape);
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 	if (ret == QMessageBox::Yes)
          exit(0);
     else
@@ -431,13 +455,11 @@ void Kpref::slotRules () {
 }
 
 void Kpref::slotQuit () {
-	int ret;
 	if (!mDesktop->mGameRunning)
 		exit(0);
-	ret = QMessageBox::question(this, tr("OpenPref"),
+	const QMessageBox::StandardButton ret = QMessageBox::question(this, tr("OpenPref"),
         tr("Do you really want to quit the game?"),
-        QMessageBox::Yes | QMessageBox::Default,
-        QMessageBox::No | QMessageBox::Escape);
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 	if (ret == QMessageBox::Yes)
   		exit(0);	
 }
@@ -462,10 +484,9 @@ void Kpref::HintMove () {
 }
 
 bool Kpref::WhistType () {
-	int ret = QMessageBox::question(kpref, tr("Choose whist type"),
+	const QMessageBox::StandardButton ret = QMessageBox::question(kpref, tr("Choose whist type"),
         tr("Do you want to whist with opened cards?"),
-        QMessageBox::Yes | QMessageBox::Default,
-        QMessageBox::No | QMessageBox::Escape);
+        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 	if (ret == QMessageBox::Yes)
 		return false;
 	else

@@ -20,7 +20,9 @@
  *      http://www.gnu.org/licenses 
  */
 
-#include <time.h>
+#include <cstdlib>
+#include <cstring>
+#include <strings.h>
 
 #include <QApplication>
 
@@ -64,8 +66,6 @@ int main (int argc, char *argv[]) {
 		optAlphaBeta2 = false;
 	}
   }
-
-  qsrand((unsigned)time(0));
 
   QApplication a(argc, argv);
   QString translationCode = QLocale::system().name();

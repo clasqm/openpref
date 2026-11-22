@@ -24,8 +24,11 @@
 #define KPREF_H
 
 #include <QString>
+#include <QAction>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenuBar>
+#include <QMouseEvent>
 #include <QToolBar>
 #include <QPixmap>
 #include <QToolButton>

@@ -28,10 +28,6 @@
   <property name="windowTitle">
    <string>Options</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>../../../../pics/tool.png</normaloff>../../../../pics/tool.png</iconset>
-  </property>
   <property name="modal">
    <bool>true</bool>
   </property>

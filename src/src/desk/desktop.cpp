@@ -23,8 +23,10 @@
 #include "prfconst.h"
 
 #include <QDebug>
-
+#include <QFile>
 #include <QMainWindow>
+#include <QMessageBox>
+#include <QRandomGenerator>
 
 #include <stdio.h>
 #include <string.h>
@@ -109,7 +111,7 @@ const QString &sGameName (eGameBid game) {
 void PrefDesktop::internalInit () {
   mCardsOnDesk[0] = mCardsOnDesk[1] = mCardsOnDesk[2] = mCardsOnDesk[3] = mFirstCard = mSecondCard = mThirdCard=0;
 
-  nCurrentStart.nValue = nCurrentMove.nValue = (qrand()%3)+1;
+  nCurrentStart.nValue = nCurrentMove.nValue = QRandomGenerator::global()->bounded(3)+1;
   nCurrentStart.nMin = nCurrentMove.nMin = 1;
   nCurrentStart.nMax = nCurrentMove.nMax = 3;
 
@@ -212,8 +214,8 @@ Player *PrefDesktop::addPlayer (Player *plr) {
 }
 
 
-// ежели номер не 1 и игра пас или (ловля мизера и игрок не сетевой),
-// то пораждаем нового HumanPlayer с номером текущего
+// п╣п╤п╣п╩п╦ п╫п╬п╪п╣я─ п╫п╣ 1 п╦ п╦пЁя─п╟ п©п╟я│ п╦п╩п╦ (п╩п╬п╡п╩я▐ п╪п╦п╥п╣я─п╟ п╦ п╦пЁя─п╬п╨ п╫п╣ я│п╣я┌п╣п╡п╬п╧),
+// я┌п╬ п©п╬я─п╟п╤п╢п╟п╣п╪ п╫п╬п╡п╬пЁп╬ HumanPlayer я│ п╫п╬п╪п╣я─п╬п╪ я┌п╣п╨я┐я┴п╣пЁп╬
 // if number is 1(pass) and offline game, create Player
 Card *PrefDesktop::makeGameMove (Card *lMove, Card *rMove, bool isPassOut) {
   Card *res = 0;
@@ -529,7 +531,7 @@ void PrefDesktop::draw (bool emitSignal) {
     }
   }
   if (iMoveX >= 0) mDeskView->drawIMove(iMoveX, iMoveY);
-  // сообщения
+  // я│п╬п╬п╠я┴п╣п╫п╦я▐
   for (int f = 1; f <= 3; f++) {
     Player *plr = player(f);
     if (plr) {
@@ -722,12 +724,12 @@ void PrefDesktop::runGame () {
 
     //draw();
 
-    // пошла торговля
+    // п©п╬я┬п╩п╟ я┌п╬я─пЁп╬п╡п╩я▐
     npasscounter = 0;
     //bids4win[0] = bids4win[1] = bids4win[2] = bids4win[3] = undefined;
     int curBidIdx = 1;
     while (npasscounter < 2) {
-      // пока как минимум двое не спасовали
+      // п©п╬п╨п╟ п╨п╟п╨ п╪п╦п╫п╦п╪я┐п╪ п╢п╡п╬п╣ п╫п╣ я│п©п╟я│п╬п╡п╟п╩п╦
       Player *plr = player(plrCounter);
       mPlayerHi = plrCounter.nValue;
       if (playerBids[curBidIdx] != gtPass) {
@@ -1154,7 +1156,7 @@ LabelRecordOnPaper:
 				
     mPlayingRound = false;
     ++nCurrentStart;
-    // записи по сдаче
+    // п╥п╟п©п╦я│п╦ п©п╬ я│п╢п╟я┤п╣
     for (int i = 1; i <= 3;i++ ) {
       Player *tmpg = player(i);
       Player *plr = player(mPlayerActive);
@@ -1164,12 +1166,12 @@ LabelRecordOnPaper:
       if (RetValAddRec) {
         int index = playerWithMaxPool();
         if (index) {
-          tmpg->mScore.whistsAdd(index, i, RetValAddRec); // на этого висты
-          RetValAddRec = player(index)->mScore.poolAdd(RetValAddRec); // этому в пулю
+          tmpg->mScore.whistsAdd(index, i, RetValAddRec); // п╫п╟ я█я┌п╬пЁп╬ п╡п╦я│я┌я▀
+          RetValAddRec = player(index)->mScore.poolAdd(RetValAddRec); // я█я┌п╬п╪я┐ п╡ п©я┐п╩я▌
           if (RetValAddRec) {
             index = playerWithMaxPool();
             if (index) {
-              tmpg->mScore.whistsAdd(index, i, RetValAddRec); // на этого висты
+              tmpg->mScore.whistsAdd(index, i, RetValAddRec); // п╫п╟ я█я┌п╬пЁп╬ п╡п╦я│я┌я▀
               RetValAddRec = player(index)->mScore.poolAdd(RetValAddRec);
               if (RetValAddRec) tmpg->mScore.mountainDown(RetValAddRec);
             } else {
@@ -1195,12 +1197,12 @@ LabelRecordOnPaper:
 				player(i)->mScore.mountainAmnesty(mm);
 	}
 	closePool();
-    // если сетевая игра -- передаем на сервер результаты круга и кто след. заходит
+    // п╣я│п╩п╦ я│п╣я┌п╣п╡п╟я▐ п╦пЁя─п╟ -- п©п╣я─п╣п╢п╟п╣п╪ п╫п╟ я│п╣я─п╡п╣я─ я─п╣п╥я┐п╩я▄я┌п╟я┌я▀ п╨я─я┐пЁп╟ п╦ п╨я┌п╬ я│п╩п╣п╢. п╥п╟я┘п╬п╢п╦я┌
 
-    // после игры -- перевернуть карты и показать их
+    // п©п╬я│п╩п╣ п╦пЁя─я▀ -- п©п╣я─п╣п╡п╣я─п╫я┐я┌я▄ п╨п╟я─я┌я▀ п╦ п©п╬п╨п╟п╥п╟я┌я▄ п╦я┘
     CardList tmplist[3];
     if (nPassCounter != 2) {
-      // была партия
+      // п╠я▀п╩п╟ п©п╟я─я┌п╦я▐
       for (int f = 1; f <= 3; f++) {
         Player *plr = player(f);
         tmplist[f-1] = plr->mCards;
@@ -1217,7 +1219,7 @@ LabelRecordOnPaper:
 		mDeskView->mySleep(4);
     mPlayingRound = false;
     if (nPassCounter != 2) {
-      // была партия
+      // п╠я▀п╩п╟ п©п╟я─я┌п╦я▐
       for (int f = 1; f <= 3; f++) {
         Player *plr = player(f);
         plr->mCardsOut = plr->mCards;

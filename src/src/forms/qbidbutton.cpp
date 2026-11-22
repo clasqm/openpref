@@ -25,8 +25,8 @@
 
 QBidButton::QBidButton (eGameBid aBid, int x, int y, QWidget *parent) : QPushButton(parent), mBid(aBid) {
   QString iName, oName;
-  iName.sprintf(":/pics/bids/s%i.png", aBid);
-  oName.sprintf("g%i", aBid);
+  iName = QStringLiteral(":/pics/bids/s%1.png").arg((int)aBid);
+  oName = QStringLiteral("g%1").arg((int)aBid);
   setObjectName(oName);
   setGeometry(x, y, 40, 27);
   setMinimumSize(40, 27);
