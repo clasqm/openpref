@@ -61,8 +61,8 @@ private:
   ~Card ();
 
 private:
-  int mFace; //от 7,8,9,10,11j,12q,13k,14a
-  int mSuit; //от 1 до 4
+  int mFace; //п╬я┌ 7,8,9,10,11j,12q,13k,14a
+  int mSuit; //п╬я┌ 1 п╢п╬ 4
   bool mValid;
 };
 

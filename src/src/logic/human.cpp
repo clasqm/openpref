@@ -63,7 +63,7 @@ void HumanPlayer::clear () {
 }
 
 
-// после сноса чего играем
+// п©п╬я│п╩п╣ я│п╫п╬я│п╟ я┤п╣пЁп╬ п╦пЁя─п╟п╣п╪
 eGameBid HumanPlayer::dropForMisere () {
   mClickX = mClickY = 0; mWaitingForClick = true;
   moveSelectCard(0, 0, 0, 0);
@@ -74,7 +74,7 @@ eGameBid HumanPlayer::dropForMisere () {
 }
 
 
-// после сноса чего играем
+// п©п╬я│п╩п╣ я│п╫п╬я│п╟ я┤п╣пЁп╬ п╦пЁя─п╟п╣п╪
 eGameBid HumanPlayer::dropForGame () {
   //mWaitingForClick = 1;
   //mClickX = mClickY = 0;
@@ -98,14 +98,14 @@ eGameBid HumanPlayer::dropForGame () {
   do {
     tmpGamesType = mDeskView->selectBid(zerogame, zerogame);
     if (tmpGamesType == 0) {
-      // вернуть снос
+      // п╡п╣я─п╫я┐я┌я▄ я│п╫п╬я│
       clearCardArea();
       returnDrop();
       moveSelectCard(0, 0, 0, 0);
       //mDeskView->mySleep(1);
       moveSelectCard(0, 0, 0, 0);
     } else if (tmpGamesType == 1) {
-      // показать пулю
+      // п©п╬п╨п╟п╥п╟я┌я▄ п©я┐п╩я▌
       kpref->slotShowScore();
     }
   } while (tmpGamesType <= 1);
@@ -118,7 +118,7 @@ eGameBid HumanPlayer::dropForGame () {
 }
 
 
-// ход при торговле
+// я┘п╬п╢ п©я─п╦ я┌п╬я─пЁп╬п╡п╩п╣
 eGameBid HumanPlayer::moveBidding (eGameBid lMove, eGameBid rMove) {
   eGameBid tmpGamesType;
   mClickX = mClickY = 0; mWaitingForClick = true;
@@ -154,7 +154,7 @@ eGameBid HumanPlayer::moveBidding (eGameBid lMove, eGameBid rMove) {
   do {
     tmpGamesType = mDeskView->selectBid(lMove, rMove);
     if (tmpGamesType == 0) {
-      // вернуть снос (если есть) и снести заново
+      // п╡п╣я─п╫я┐я┌я▄ я│п╫п╬я│ (п╣я│п╩п╦ п╣я│я┌я▄) п╦ я│п╫п╣я│я┌п╦ п╥п╟п╫п╬п╡п╬
       clearCardArea();
       returnDrop();
       moveSelectCard(0, 0, 0, 0);

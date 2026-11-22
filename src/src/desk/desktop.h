@@ -97,7 +97,7 @@ private:
   bool mPlayingRound;
   int mPlayerActive; // who plays (if not raspass and mPlayingRound=true)
   int iMoveX, iMoveY;
-  int mPlayerHi; // подсвеченая мессага
+  int mPlayerHi; // п©п╬п╢я│п╡п╣я┤п╣п╫п╟я▐ п╪п╣я│я│п╟пЁп╟
 };
 
 
