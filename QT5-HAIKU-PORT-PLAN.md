@@ -1,6 +1,8 @@
 # OpenPref — Qt 4 → Qt 5 conversion plan (Haiku)
 
-Status: **plan only, no source changes made yet.**
+Status: **T1 and T2 done.** T1 = `src/openpref.qrc` (111 PNGs) + root
+`CMakeLists.txt`; T2 = the two Qt5 hard errors (`qFindChildren`,
+`toAscii()`) plus the dead `<QTextCodec>` include. T3–T8 pending.
 Branch: `converttoqt5` (per `AGENTS.md`). Base: `originalqt4`.
 Target: Qt 5.15.x on Haiku x86_64 (`qt5`, `qt5_devel`, `qt5_tools`).
 
@@ -295,27 +297,24 @@ Optional and cheap: add a `.gitignore` with `build/` and `*.o`.
    with `file` + a diff that is whitespace/encoding-only).
 6. **T6 — cleanup**: delete `.pri` fragments, `*.cmake` fragments and
    `cmake/FindLinguist.cmake`; optional `.gitignore`.
-7. **T7 — P2 polish** (only if wanted): menus → `QAction`,
-   `setWindowIcon`, `GetImgByName` return bug, message boxes.
+7. **T7 — P2 polish**: menus → `QAction`, `setWindowIcon`, `GetImgByName`
+   return bug, message boxes, shortcut arithmetic.
 8. **T8 — docs**: short `README.md` build section
    (`mkdir build && cd build && cmake .. && make`).
 
 ---
 
-## 9. Decisions needed before starting T4/T7
+## 9. Decisions (resolved)
 
-1. **Randomness**: `QRandomGenerator::global()` (simple, warning-free) or one
-   seeded generator owned by the game (reproducible AI games, needs a little
-   plumbing)? *Recommendation: global, matching current non-seeded-per-run
-   behaviour.*
-2. **Delete the legacy build files** (`.pri`, fragment `.cmake`,
-   `cmake/FindLinguist.cmake`)? *Recommendation: yes — they are unreferenced and
-   AGENTS.md asks for CMake instead of qmake.*
-3. **Qt5-only or Qt6-ready code?** *Recommendation: Qt5-only compile target, but
-   use the Qt6-compatible forms (`QScreen`, `arg()`, `QRandomGenerator`) so a
-   later Qt6 pass is small.*
-4. **P2 menu/message-box modernisation in this branch, or a later one?**
-   *Recommendation: later — it is not needed to build or run.*
+1. **Randomness**: `QRandomGenerator::global()` — matches the current
+   non-seeded behaviour, no extra plumbing. (T4)
+2. **Legacy build files**: delete them — the `.pri` fragments, the `*.cmake`
+   fragments and `cmake/FindLinguist.cmake` are unreferenced, and AGENTS.md asks
+   for CMake instead of qmake. (T6)
+3. **Qt5-only or Qt6-ready code?** Compile target is Qt 5.15, but use the
+   Qt6-compatible forms (`QScreen`, `arg()`, `QRandomGenerator`, `QAction`
+   objects) so a later Qt6 pass is small. (T4, T7)
+4. **P2 menu/message-box modernisation**: do it in this branch. (T7)
 
 ---
 
