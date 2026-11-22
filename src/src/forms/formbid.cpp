@@ -91,7 +91,7 @@ void FormBid::onBidClick () {
 
 QList<QPushButton *> FormBid::buttonList () {
   QList<QPushButton *> res;
-  QList<QWidget *> wList = qFindChildren<QWidget *>(this);
+  const QList<QWidget *> wList = findChildren<QWidget *>();
   foreach (QWidget *widget, wList) {
     QPushButton *b = dynamic_cast<QPushButton *>(widget);
     if (b) res << b;
@@ -102,7 +102,7 @@ QList<QPushButton *> FormBid::buttonList () {
 
 QList<QBidButton *> FormBid::bidButtonList () {
   QList<QBidButton *> res;
-  QList<QWidget *> wList = qFindChildren<QWidget *>(this);
+  const QList<QWidget *> wList = findChildren<QWidget *>();
   foreach (QWidget *widget, wList) {
     QBidButton *b = dynamic_cast<QBidButton *>(widget);
     if (b) res << b;

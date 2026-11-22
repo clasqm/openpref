@@ -80,8 +80,8 @@ bool DeskView::loadCards () {
   for (int face = 7; face <= 14; face++) {
     for (int suit = 1; suit <= 4; suit++) {
       QString fname, resname;
-      resname.sprintf("%i%i", face, suit);
-      fname.sprintf(QString(":/pics/cards/"+deckPath+"%i%i.png").toAscii(), face, suit);
+      resname = QString::number(face) + QString::number(suit);
+      fname = QStringLiteral(":/pics/cards/%1%2%3.png").arg(deckPath).arg(face).arg(suit);
       cardI[resname] = new QImage(fname);
       // build highlighted image
       QImage *im = new QImage(fname);

@@ -23,7 +23,6 @@
 #include <time.h>
 
 #include <QApplication>
-#include <QTextCodec>
 
 #include <QLocale>
 #include <QTranslator>
