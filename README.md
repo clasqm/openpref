@@ -6,6 +6,8 @@ A card game
 
 OpenPref is an open source implementation of European trick-taking game Preferans (or Preference) against two virtual players. Information about game's rules and strategy can be easily found in Wikipedia: http://en.wikipedia.org/wiki/Preferans.
 
+Originally forked from https://sourceforge.net/projects/openpref/ and converted to QT5
+
 ## Building
 
 OpenPref needs Qt 5.15 (Widgets only) and CMake 3.16 or newer.
